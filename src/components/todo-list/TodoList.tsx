@@ -13,7 +13,12 @@ export const TodoList: React.FC<Props> = (props) => {
   return (
     <>
       {todos.map((todo, i) => (
-        <Todo key={i} todo={todo} deleteTodo={deleteTodo} edit={edit} />
+        <Todo
+          key={todo.name + i}
+          todo={todo}
+          deleteTodo={deleteTodo}
+          edit={edit}
+        />
       ))}
     </>
   );

@@ -33,6 +33,10 @@ export const App: React.FC = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    setTodos(todos);
+  }, [todos]);
+
   const getPoke = async (url: string) => {
     const data = await axios(url);
     setLastUpdate(Date.now());
@@ -42,44 +46,43 @@ export const App: React.FC = () => {
         name: data.data.name,
         url: data.data.forms[0].url,
         updateTime: lastUpdate,
-        perfect: true, // default - of course perfect!
+        perfect: false, // will be caught!
       },
     ]);
   };
 
-  useEffect(() => {
-    setTodos(todos);
-  }, [todos]);
-
   const deleteTodo = (name: string) => {
+    console.log("NAME FROM APP", name);
     setTodos(todos.filter((t) => t.name !== name));
   };
 
   const edit = (name: string, newPoke: ITodo) => {
-    const pokeIdx = todos.findIndex((p) => p.name === name); // we are assuming that names are unique (ids)
+    const pokeIdx = todos.findIndex((p) => p.name === name); // we are assuming that names are unique
     todos[pokeIdx] = {
       name: newPoke.name,
       url: newPoke.url,
       perfect: newPoke.perfect,
       updateTime: newPoke.updateTime,
     };
-    console.log("TIME", newPoke.updateTime);
   };
 
   return (
     <div>
-      <p>
-        Select Poke for a new TODO:
+      <div className="title">
+        <img src="./poke_logo.png" alt="pokelogo" className="logo" />
+        <h2>TODO Poke's!</h2>
+      </div>
+      <div className="inputForm">
+        <p>Select Poke for a new Todo:</p>
         <PokeList
           pokes={pokes}
           handlePokeSelect={({ currentTarget }) => {
-            // console.log(currentTarget.value);
             setPoke(pokes.filter((p) => p.name === currentTarget.value)[0]);
           }}
         />
-      </p>
-      <button onClick={() => getPoke(poke!.url)}>ADD new Poke</button>
-      <table>
+        <button onClick={() => getPoke(poke!.url)}>ADD new Poke</button>
+      </div>
+      <table className={todos.length > 0 ? "" : "none"}>
         <tbody>
           <tr>
             <th>Poke name</th>

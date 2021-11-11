@@ -10,48 +10,39 @@ interface Props {
 
 export const Todo: React.FC<Props> = (props) => {
   let { todo, deleteTodo, edit } = props;
-  const [editRowStyle, setStyle] = useState<string>("editRow");
+  const [editRowStyle, setStyle] = useState<string>("none");
+  const [inputName, setName] = useState<string>(todo.name);
   const [isChecked, setChecked] = useState<boolean | undefined>(todo.perfect);
-  const [inputName, SetName] = useState<string>(todo.name);
+  const [inputUrl, setUrl] = useState<string>(todo.url);
   const [todoNew, setTodo] = useState<ITodo>(todo);
 
   useEffect(() => {
     setTodo({
       name: inputName,
       perfect: todoNew.perfect,
-      url: todoNew.url,
+      url: inputUrl,
       updateTime: todoNew.updateTime,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputName]);
+  }, [inputName, inputUrl]);
 
   const setStyleHandler = (): void => {
-    if (editRowStyle === "editRow") {
+    if (editRowStyle === "none") {
       setStyle("");
     } else {
-      setStyle("editRow");
+      setStyle("none");
     }
   };
-
-  //   const changeCheck = (e: any) => {
-  //     setChecked(e.target.checked);
-  //     edit(todo.name, {
-  //       name: todoNew.name,
-  //       url: todoNew.url,
-  //       perfect: isChecked,
-  //       updateTime: todoNew.updateTime,
-  //     });
-  //   };
 
   return (
     <>
       <tr>
         <td>{todoNew.name}</td>
-        <td>{isChecked ? "Perfect" : "Not bad"}</td>
+        <td>{isChecked ? "Caught" : "Will be"}</td>
         <td>{DateConverter(todoNew.updateTime!)}</td>
-        <td>{todo.url}</td>
+        <td>{todoNew.url}</td>
         <td>
-          <button onClick={() => deleteTodo(todo.name)}>Delete</button>
+          <button onClick={() => deleteTodo(todoNew.name)}>Delete</button>
           <button onClick={() => setStyleHandler()}>Edit</button>
         </td>
       </tr>
@@ -60,17 +51,17 @@ export const Todo: React.FC<Props> = (props) => {
           <input
             type="text"
             value={inputName}
-            onChange={(e) => SetName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
           <button
-            onClick={() =>
+            onClick={() => {
               edit(todo.name, {
                 name: inputName,
                 url: todoNew.url,
                 perfect: isChecked,
                 updateTime: Date.now(),
-              })
-            }
+              });
+            }}
           >
             Submit
           </button>
@@ -89,7 +80,7 @@ export const Todo: React.FC<Props> = (props) => {
               });
             }}
           />
-          <label>Perfect?</label>
+          <label>Caught</label>
         </td>
         <td>
           <button
@@ -108,16 +99,27 @@ export const Todo: React.FC<Props> = (props) => {
               });
             }}
           >
-            Submit
+            Update
           </button>
         </td>
         <td>
           <input
             type="text"
-            //   value={}
-            //   onChange={}
+            value={inputUrl}
+            onChange={(e) => setUrl(e.target.value)}
           />
-          <button>Submit</button>
+          <button
+            onClick={() =>
+              edit(todo.name, {
+                name: todoNew.name,
+                url: inputUrl,
+                perfect: isChecked,
+                updateTime: Date.now(),
+              })
+            }
+          >
+            Update
+          </button>
         </td>
         <td></td>
       </tr>

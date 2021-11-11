@@ -5,15 +5,16 @@ import { Todo } from "../todo/Todo";
 interface Props {
   todos: ITodo[];
   deleteTodo: (name: string) => void;
+  edit: (name: string, newPoke: ITodo) => void;
 }
 
 export const TodoList: React.FC<Props> = (props) => {
-  const { todos, deleteTodo } = props;
+  const { todos, deleteTodo, edit } = props;
   return (
     <>
-      {todos.map((todo) => {
-        return <Todo todo={todo} deleteTodo={deleteTodo} />;
-      })}
+      {todos.map((todo, i) => (
+        <Todo key={i} todo={todo} deleteTodo={deleteTodo} edit={edit} />
+      ))}
     </>
   );
 };

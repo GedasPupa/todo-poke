@@ -23,5 +23,5 @@ export const DateConverter = (d: number) => {
     sc = "0" + sc;
   }
 
-  return year + "-" + month + "-" + dt + " T: " + hr + ":" + mn + ":" + sc;
+  return year + "-" + month + "-" + dt + " " + hr + ":" + mn + ":" + sc;
 };

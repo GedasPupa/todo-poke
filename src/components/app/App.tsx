@@ -17,7 +17,7 @@ export interface IPoke {
 export type State = ITodo[];
 
 export const App: React.FC = () => {
-  const [pokes, setPokes] = useState<IPoke[]>([{ name: "", url: "" }]);
+  const [pokes, setPokes] = useState<IPoke[]>([]);
   const [poke, setPoke] = useState<IPoke>();
 
   const [todos, setTodos] = useState<State>([]);
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
       .get("https://pokeapi.co/api/v2/pokemon?limit=100&offset=200")
       .then((response) => {
         setPokes(response.data.results);
-        setPoke(response.data.results[1]);
+        setPoke(response.data.results[0]);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -42,14 +42,28 @@ export const App: React.FC = () => {
         name: data.data.name,
         url: data.data.forms[0].url,
         updateTime: lastUpdate,
-        perfect: true,
+        perfect: true, // default - of course perfect!
       },
     ]);
-    console.log("From async fetch", data.data.name);
   };
+
+  useEffect(() => {
+    setTodos(todos);
+  }, [todos]);
 
   const deleteTodo = (name: string) => {
     setTodos(todos.filter((t) => t.name !== name));
+  };
+
+  const edit = (name: string, newPoke: ITodo) => {
+    const pokeIdx = todos.findIndex((p) => p.name === name); // we are assuming that names are unique (ids)
+    todos[pokeIdx] = {
+      name: newPoke.name,
+      url: newPoke.url,
+      perfect: newPoke.perfect,
+      updateTime: newPoke.updateTime,
+    };
+    console.log("TIME", newPoke.updateTime);
   };
 
   return (
@@ -74,7 +88,7 @@ export const App: React.FC = () => {
             <th>Url</th>
             <th>Actions</th>
           </tr>
-          <TodoList todos={todos} deleteTodo={deleteTodo} />
+          <TodoList todos={todos} deleteTodo={deleteTodo} edit={edit} />
         </tbody>
       </table>
     </div>

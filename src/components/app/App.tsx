@@ -19,7 +19,6 @@ export type State = ITodo[];
 export const App: React.FC = () => {
   const [pokes, setPokes] = useState<IPoke[]>([]);
   const [poke, setPoke] = useState<IPoke>();
-
   const [todos, setTodos] = useState<State>([]);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
@@ -33,12 +32,16 @@ export const App: React.FC = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
-    setTodos(todos);
-  }, [todos]);
+  // useEffect(() => {
+  //   setTodos(todos);
+  // }, [todos]);
 
   const getPoke = async (url: string) => {
     const data = await axios(url);
+    if (todos.filter((t) => t.name === data.data.name).length > 0) {
+      console.log(`Poke '${data.data.name}' already in a collection!`);
+      return;
+    }
     setLastUpdate(Date.now());
     setTodos([
       ...todos,
@@ -52,7 +55,6 @@ export const App: React.FC = () => {
   };
 
   const deleteTodo = (name: string) => {
-    console.log("NAME FROM APP", name);
     setTodos(todos.filter((t) => t.name !== name));
   };
 

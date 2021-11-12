@@ -56,9 +56,16 @@ h2 {
 .logo {
   width: 20%;
 }
+
 .title {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 30px;
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
